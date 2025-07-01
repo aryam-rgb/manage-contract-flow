@@ -12,6 +12,8 @@ import Contracts from "./pages/Contracts";
 import Templates from "./pages/Templates";
 import Admin from "./pages/Admin";
 import Analytics from "./pages/Analytics";
+import CreateContract from "./pages/CreateContract";
+import ReviewContract from "./pages/ReviewContract";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,8 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/contracts" element={<Contracts />} />
+                  <Route path="/contracts/create" element={<CreateContract />} />
+                  <Route path="/contracts/review/:id" element={<ReviewContract />} />
                   <Route path="/templates" element={<Templates />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/analytics" element={<Analytics />} />
