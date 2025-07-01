@@ -31,27 +31,28 @@ const navigationItems = [
 ];
 
 export function AppSidebar() {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const isCollapsed = state === "collapsed";
 
   const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700" : "hover:bg-gray-50 text-gray-700";
 
   return (
-    <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible>
+    <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
       <SidebarContent className="bg-white border-r border-gray-200">
         <div className="p-4">
-          <Button className="w-full bg-blue-600 hover:bg-blue-700" size={collapsed ? "icon" : "default"}>
+          <Button className="w-full bg-blue-600 hover:bg-blue-700" size={isCollapsed ? "icon" : "default"}>
             <Plus className="h-4 w-4" />
-            {!collapsed && <span className="ml-2">New Contract</span>}
+            {!isCollapsed && <span className="ml-2">New Contract</span>}
           </Button>
         </div>
 
         <SidebarGroup>
           <SidebarGroupLabel className="text-gray-500 text-xs uppercase tracking-wider px-4">
-            {!collapsed && "Navigation"}
+            {!isCollapsed && "Navigation"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -60,7 +61,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} end className={getNavCls}>
                       <item.icon className="h-5 w-5" />
-                      {!collapsed && <span className="ml-3">{item.title}</span>}
+                      {!isCollapsed && <span className="ml-3">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
