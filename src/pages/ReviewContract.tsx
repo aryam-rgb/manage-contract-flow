@@ -10,11 +10,11 @@ const ReviewContract = () => {
   const { id } = useParams();
 
   const workflowSteps = [
-    { id: '1', title: 'Contract Initiated', status: 'completed', actor: 'John Doe (IT Dept)', date: '2024-01-10', comments: 'Initial contract request submitted' },
-    { id: '2', title: 'Legal Review', status: 'current', actor: 'Jane Smith (Legal)', date: '', comments: '' },
-    { id: '3', title: 'Department Alignment', status: 'pending', actor: 'John Doe (IT Dept)', date: '', comments: '' },
-    { id: '4', title: 'Final Approval', status: 'pending', actor: 'Legal Manager', date: '', comments: '' },
-    { id: '5', title: 'Contract Signed', status: 'pending', actor: 'System', date: '', comments: '' }
+    { id: '1', title: 'Contract Initiated', status: 'completed' as const, actor: 'John Doe (IT Dept)', date: '2024-01-10', comments: 'Initial contract request submitted' },
+    { id: '2', title: 'Legal Review', status: 'current' as const, actor: 'Jane Smith (Legal)', date: '', comments: '' },
+    { id: '3', title: 'Department Alignment', status: 'pending' as const, actor: 'John Doe (IT Dept)', date: '', comments: '' },
+    { id: '4', title: 'Final Approval', status: 'pending' as const, actor: 'Legal Manager', date: '', comments: '' },
+    { id: '5', title: 'Contract Signed', status: 'pending' as const, actor: 'System', date: '', comments: '' }
   ];
 
   const handleSubmit = (data: any) => {

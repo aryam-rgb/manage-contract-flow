@@ -90,8 +90,8 @@ export function ContractList() {
   const filteredContracts = contracts.filter(contract => {
     const matchesSearch = contract.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          contract.contractTitle.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = !statusFilter || contract.status === statusFilter;
-    const matchesType = !typeFilter || contract.contractType === typeFilter;
+    const matchesStatus = !statusFilter || statusFilter === 'all' || contract.status === statusFilter;
+    const matchesType = !typeFilter || typeFilter === 'all' || contract.contractType === typeFilter;
     return matchesSearch && matchesStatus && matchesType;
   });
 
@@ -128,7 +128,7 @@ export function ContractList() {
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="Draft">Draft</SelectItem>
                 <SelectItem value="Under Review">Under Review</SelectItem>
                 <SelectItem value="Pending Approval">Pending Approval</SelectItem>
@@ -141,7 +141,7 @@ export function ContractList() {
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="License">License</SelectItem>
                 <SelectItem value="Consultancy">Consultancy</SelectItem>
                 <SelectItem value="Supply">Supply</SelectItem>
