@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Auth from "./pages/Auth";
+import Bootstrap from "./pages/Bootstrap";
 import Index from "./pages/Index";
 import Contracts from "./pages/Contracts";
 import Templates from "./pages/Templates";
@@ -37,10 +38,11 @@ const MainApp = () => {
     );
   }
 
-  // If not authenticated, show auth page without sidebar
+  // If not authenticated, show bootstrap or auth page
   if (!user) {
     return (
       <Routes>
+        <Route path="/bootstrap" element={<Bootstrap />} />
         <Route path="*" element={<Auth />} />
       </Routes>
     );
