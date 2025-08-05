@@ -23,8 +23,30 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const MainApp = () => {
-  const { user, signOut, userRole } = useAuth();
+  const { user, signOut, userRole, loading } = useAuth();
 
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show auth page without sidebar
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="*" element={<Auth />} />
+      </Routes>
+    );
+  }
+
+  // If authenticated, show main app with sidebar
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
@@ -34,56 +56,27 @@ const MainApp = () => {
             <SidebarTrigger className="mr-4" />
             <h1 className="text-xl font-semibold text-gray-900">ContractFlow</h1>
             <div className="ml-auto flex items-center space-x-4">
-              {user && (
-                <>
-                  <span className="text-sm text-gray-600">
-                    {user.email} {userRole && `(${userRole})`}
-                  </span>
-                  <Button variant="outline" size="sm" onClick={signOut}>
-                    Sign Out
-                  </Button>
-                </>
-              )}
+              <span className="text-sm text-gray-600">
+                {user.email} {userRole && `(${userRole})`}
+              </span>
+              <Button variant="outline" size="sm" onClick={signOut}>
+                Sign Out
+              </Button>
             </div>
           </header>
           <main className="flex-1 p-6">
             <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/contracts" element={
-                <ProtectedRoute>
-                  <Contracts />
-                </ProtectedRoute>
-              } />
-              <Route path="/contracts/create" element={
-                <ProtectedRoute>
-                  <CreateContract />
-                </ProtectedRoute>
-              } />
-              <Route path="/contracts/review/:id" element={
-                <ProtectedRoute>
-                  <ReviewContract />
-                </ProtectedRoute>
-              } />
-              <Route path="/templates" element={
-                <ProtectedRoute>
-                  <Templates />
-                </ProtectedRoute>
-              } />
+              <Route path="/" element={<Index />} />
+              <Route path="/contracts" element={<Contracts />} />
+              <Route path="/contracts/create" element={<CreateContract />} />
+              <Route path="/contracts/review/:id" element={<ReviewContract />} />
+              <Route path="/templates" element={<Templates />} />
               <Route path="/admin" element={
                 <ProtectedRoute requiredRole="admin">
                   <Admin />
                 </ProtectedRoute>
               } />
-              <Route path="/analytics" element={
-                <ProtectedRoute>
-                  <Analytics />
-                </ProtectedRoute>
-              } />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
