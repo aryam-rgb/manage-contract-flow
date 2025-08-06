@@ -74,7 +74,7 @@ const Bootstrap = () => {
     setIsCreating(true);
 
     try {
-      // First sign up the admin user
+      // First sign up the admin user with email confirmation disabled
       const { data, error } = await supabase.auth.signUp({
         email: adminForm.email,
         password: adminForm.password,
