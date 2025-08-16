@@ -158,28 +158,49 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          department_id: string | null
           full_name: string | null
           id: string
+          unit_id: string | null
           updated_at: string
           username: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          department_id?: string | null
           full_name?: string | null
           id: string
+          unit_id?: string | null
           updated_at?: string
           username: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          department_id?: string | null
           full_name?: string | null
           id?: string
+          unit_id?: string | null
           updated_at?: string
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       units: {
         Row: {
