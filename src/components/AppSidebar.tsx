@@ -1,13 +1,4 @@
 
-import { useState } from "react";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  BarChart3, 
-  Settings,
-  Plus
-} from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -20,12 +11,19 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { 
+  FileText, 
+  Plus, 
+  BarChart3, 
+  Settings, 
+  Building2,
+  Home
+} from "lucide-react";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/", icon: Home },
   { title: "Contracts", url: "/contracts", icon: FileText },
-  { title: "Templates", url: "/templates", icon: FileText },
+  { title: "Create Contract", url: "/contracts/create", icon: Plus },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Admin", url: "/admin", icon: Settings },
 ];
@@ -38,20 +36,28 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700" : "hover:bg-gray-50 text-gray-700";
+    isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50";
 
   return (
     <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
-      <SidebarContent className="bg-white border-r border-gray-200">
-        <div className="p-4">
-          <Button className="w-full bg-blue-600 hover:bg-blue-700" size={isCollapsed ? "icon" : "default"}>
-            <Plus className="h-4 w-4" />
-            {!isCollapsed && <span className="ml-2">New Contract</span>}
-          </Button>
+      <SidebarContent className="bg-background border-r border-border">
+        {/* KCB Bank Header */}
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-primary-foreground" />
+            </div>
+            {!isCollapsed && (
+              <div>
+                <div className="font-bold text-lg text-primary">KCB</div>
+                <div className="text-xs text-muted-foreground">Contracts</div>
+              </div>
+            )}
+          </div>
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-gray-500 text-xs uppercase tracking-wider px-4">
+          <SidebarGroupLabel className="text-muted-foreground text-xs uppercase tracking-wider px-4">
             {!isCollapsed && "Navigation"}
           </SidebarGroupLabel>
           <SidebarGroupContent>

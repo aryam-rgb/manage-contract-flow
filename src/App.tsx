@@ -29,10 +29,10 @@ const MainApp = () => {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -51,14 +51,14 @@ const MainApp = () => {
   // If authenticated, show main app with sidebar
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6">
+          <header className="h-16 bg-card border-b border-border flex items-center px-6">
             <SidebarTrigger className="mr-4" />
-            <h1 className="text-xl font-semibold text-gray-900">ContractFlow</h1>
+            <h1 className="text-xl font-semibold text-foreground">KCB Bank Contracts</h1>
             <div className="ml-auto flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 {user.email} {userRole && `(${userRole})`}
               </span>
               <Button variant="outline" size="sm" onClick={signOut}>
