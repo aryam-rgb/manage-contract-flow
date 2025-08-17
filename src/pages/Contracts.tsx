@@ -20,10 +20,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ContractList } from "@/components/contracts/ContractList";
+import { ContractListDynamic } from "@/components/contracts/ContractListDynamic";
 
 const Contracts = () => {
-  return <ContractList />;
+  return <ContractListDynamic />;
 };
 
 export default Contracts;

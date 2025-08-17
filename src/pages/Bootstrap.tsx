@@ -129,7 +129,10 @@ const Bootstrap = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">ContractFlow Setup</h1>
+          <div className="flex items-center justify-center mb-4">
+            <img src="/src/assets/kcb-logo.svg" alt="KCB Bank" className="h-12" />
+          </div>
+          <h1 className="text-3xl font-bold text-primary">KCB Bank Setup</h1>
           <p className="mt-2 text-gray-600">Create the first admin user to get started</p>
         </div>
 
@@ -137,7 +140,7 @@ const Bootstrap = () => {
           <CardHeader>
             <CardTitle>Bootstrap Admin User</CardTitle>
             <CardDescription>
-              No users found in the system. Create the first admin user to initialize ContractFlow.
+              No users found in the system. Create the first admin user to initialize KCB Contract Management System.
             </CardDescription>
           </CardHeader>
           <CardContent>
