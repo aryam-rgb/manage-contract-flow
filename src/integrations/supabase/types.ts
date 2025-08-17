@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      contract_activities: {
+        Row: {
+          activity_type: string
+          contract_id: string
+          created_at: string
+          description: string
+          id: string
+          metadata: Json | null
+          new_value: string | null
+          performed_at: string
+          performed_by: string
+          previous_value: string | null
+        }
+        Insert: {
+          activity_type: string
+          contract_id: string
+          created_at?: string
+          description: string
+          id?: string
+          metadata?: Json | null
+          new_value?: string | null
+          performed_at?: string
+          performed_by: string
+          previous_value?: string | null
+        }
+        Update: {
+          activity_type?: string
+          contract_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          metadata?: Json | null
+          new_value?: string | null
+          performed_at?: string
+          performed_by?: string
+          previous_value?: string | null
+        }
+        Relationships: []
+      }
       contract_workflow_steps: {
         Row: {
           assigned_to: string | null
