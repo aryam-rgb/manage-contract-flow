@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 interface ContractStats {
   total: number;
@@ -32,6 +33,7 @@ export function DynamicDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -122,13 +124,21 @@ export function DynamicDashboard() {
   };
 
   const dashboardStats = [
-    { title: "Total Contracts", value: stats.total.toString(), icon: FileText, color: "bg-primary", change: "+12%" },
-    { title: "Pending Review", value: stats.pending.toString(), icon: Clock, color: "bg-accent", change: "-5%" },
-    { title: "Approved/Signed", value: stats.approved.toString(), icon: CheckCircle, color: "bg-green-500", change: "+18%" },
-    { title: "Expiring Soon", value: stats.expiring.toString(), icon: AlertCircle, color: "bg-destructive", change: "+2%" },
-    { title: "Active Departments", value: stats.byDepartment.length.toString(), icon: Building, color: "bg-purple-500", change: "+8%" },
-    { title: "Total Value", value: `KES ${(stats.totalValue / 1000000).toFixed(1)}M`, icon: DollarSign, color: "bg-indigo-500", change: "+15%" },
+    { title: "Total Contracts", value: stats.total.toString(), icon: FileText, color: "bg-primary/90", change: "+12%" },
+    { title: "Pending Review", value: stats.pending.toString(), icon: Clock, color: "bg-orange-500/90", change: "-5%" },
+    { title: "Approved/Signed", value: stats.approved.toString(), icon: CheckCircle, color: "bg-green-500/90", change: "+18%" },
+    { title: "Expiring Soon", value: stats.expiring.toString(), icon: AlertCircle, color: "bg-destructive/90", change: "+2%" },
+    { title: "Active Departments", value: stats.byDepartment.length.toString(), icon: Building, color: "bg-purple-500/90", change: "+8%" },
+    { title: "Total Value", value: `KES ${(stats.totalValue / 1000000).toFixed(1)}M`, icon: DollarSign, color: "bg-indigo-500/90", change: "+15%" },
   ];
+
+  const handleScheduleReview = () => {
+    navigate('/contracts');
+  };
+
+  const handleNewContract = () => {
+    navigate('/create-contract');
+  };
 
   if (loading) {
     return (
@@ -154,11 +164,11 @@ export function DynamicDashboard() {
           <p className="text-muted-foreground mt-1">Comprehensive overview of contract lifecycle and performance</p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleScheduleReview}>
             <Calendar className="h-4 w-4 mr-2" />
             Schedule Review
           </Button>
-          <Button>
+          <Button onClick={handleNewContract}>
             <FileText className="h-4 w-4 mr-2" />
             New Contract
           </Button>
@@ -166,21 +176,23 @@ export function DynamicDashboard() {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {dashboardStats.map((stat) => (
-          <Card key={stat.title} className="hover:shadow-lg transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-              <div className={`p-2 rounded-lg ${stat.color}`}>
-                <stat.icon className="h-4 w-4 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-              <div className="flex items-center mt-1">
-                <TrendingUp className="h-3 w-3 text-green-600 mr-1" />
-                <span className="text-xs text-green-600">{stat.change}</span>
-                <span className="text-xs text-muted-foreground ml-1">vs last month</span>
+          <Card key={stat.title} className="hover:shadow-lg transition-all duration-200 hover:scale-105 border-l-4 border-l-primary/30">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-muted-foreground mb-1">{stat.title}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <div className="flex items-center mt-2">
+                    <TrendingUp className="h-3 w-3 text-green-600 mr-1" />
+                    <span className="text-xs text-green-600 font-medium">{stat.change}</span>
+                    <span className="text-xs text-muted-foreground ml-1">vs last month</span>
+                  </div>
+                </div>
+                <div className={`p-3 rounded-xl ${stat.color} shadow-lg`}>
+                  <stat.icon className="h-5 w-5 text-white" />
+                </div>
               </div>
             </CardContent>
           </Card>
