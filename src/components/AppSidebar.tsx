@@ -16,9 +16,9 @@ import {
   Plus, 
   BarChart3, 
   Settings, 
-  Building2,
   Home
 } from "lucide-react";
+import kcbLogo from "@/assets/kcb-logo-official.svg";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -44,13 +44,14 @@ export function AppSidebar() {
         {/* KCB Bank Header */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img 
+              src={kcbLogo} 
+              alt="KCB Bank Logo" 
+              className={isCollapsed ? "w-8 h-8" : "w-12 h-8"}
+            />
             {!isCollapsed && (
               <div>
-                <div className="font-bold text-lg text-primary">KCB</div>
-                <div className="text-xs text-muted-foreground">Contracts</div>
+                <div className="text-xs text-muted-foreground">Contract Management</div>
               </div>
             )}
           </div>
