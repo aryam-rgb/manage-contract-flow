@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { 
   FileText, Clock, CheckCircle, AlertCircle, TrendingUp, Users, 
-  Calendar, DollarSign, Building, Award, AlertTriangle 
+  Calendar, DollarSign, Building, Award, AlertTriangle, User, MessageCircle, Activity 
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +21,15 @@ interface ContractStats {
   byDepartment: Array<{department: string, contracts: number, value: number}>;
 }
 
+interface RecentActivity {
+  id: string;
+  activity_type: string;
+  description: string;
+  performed_at: string;
+  performed_by: string;
+  contract_id: string;
+}
+
 export function DynamicDashboard() {
   const [stats, setStats] = useState<ContractStats>({
     total: 0,
@@ -31,12 +40,14 @@ export function DynamicDashboard() {
     byType: [],
     byDepartment: []
   });
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchRecentActivities();
   }, []);
 
   const fetchDashboardStats = async () => {
@@ -123,6 +134,38 @@ export function DynamicDashboard() {
     }
   };
 
+  const fetchRecentActivities = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contract_activities')
+        .select('*')
+        .order('performed_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setRecentActivities(data || []);
+    } catch (error: any) {
+      console.error('Failed to fetch recent activities:', error.message);
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'status_change':
+        return <CheckCircle className="h-4 w-4" />;
+      case 'assignment':
+        return <User className="h-4 w-4" />;
+      case 'review':
+        return <FileText className="h-4 w-4" />;
+      case 'approval':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'comment':
+        return <MessageCircle className="h-4 w-4" />;
+      default:
+        return <Activity className="h-4 w-4" />;
+    }
+  };
+
   const dashboardStats = [
     { title: "Total Contracts", value: stats.total.toString(), icon: FileText, color: "bg-primary/90", change: "+12%" },
     { title: "Pending Review", value: stats.pending.toString(), icon: Clock, color: "bg-orange-500/90", change: "-5%" },
@@ -199,7 +242,7 @@ export function DynamicDashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Contract Types Distribution */}
         <Card>
           <CardHeader>
@@ -262,6 +305,43 @@ export function DynamicDashboard() {
             ) : (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">No department data available</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Activities */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Activity className="h-5 w-5" />
+              <span>Recent Activities</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {recentActivities.length > 0 ? (
+              <div className="space-y-4 max-h-80 overflow-y-auto">
+                {recentActivities.map((activity) => (
+                  <div key={activity.id} className="flex space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        {getActivityIcon(activity.activity_type)}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground">{activity.description}</p>
+                      <div className="flex items-center mt-2 space-x-2">
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(activity.performed_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No recent activities</p>
               </div>
             )}
           </CardContent>

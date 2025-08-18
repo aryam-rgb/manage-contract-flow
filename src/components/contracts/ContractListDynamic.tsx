@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Search, Filter, Download, Eye, Edit, Calendar, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ContractActions } from "./ContractActions";
+import { ContractActivities } from "./ContractActivities";
 
 interface Contract {
   id: string;
@@ -21,6 +23,8 @@ interface Contract {
   assigned_to: string | null;
   department_id: string | null;
   created_at: string;
+  description: string | null;
+  priority: string;
   departments?: {
     name: string;
   } | null;
@@ -35,6 +39,7 @@ export function ContractListDynamic() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [selectedContract, setSelectedContract] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -52,17 +57,7 @@ export function ContractListDynamic() {
       
       // Transform the data to match our interface
       const transformedData: Contract[] = (data || []).map(contract => ({
-        id: contract.id,
-        title: contract.title,
-        contract_type: contract.contract_type,
-        status: contract.status,
-        start_date: contract.start_date,
-        end_date: contract.end_date,
-        value: contract.value,
-        created_by: contract.created_by,
-        assigned_to: contract.assigned_to,
-        department_id: contract.department_id,
-        created_at: contract.created_at,
+        ...contract,
         departments: null,
         profiles: null
       }));
@@ -133,7 +128,7 @@ export function ContractListDynamic() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Contract Management</h2>
-          <p className="text-muted-foreground mt-1">Manage and track all contracts</p>
+          <p className="text-muted-foreground mt-1">Manage and track all contracts with real-time activities</p>
         </div>
         <Button>
           <Download className="h-4 w-4 mr-2" />
@@ -141,114 +136,137 @@ export function ContractListDynamic() {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Filters & Search</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search contracts..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="pending_review">Pending Review</SelectItem>
-                <SelectItem value="in_review">In Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="signed">Signed</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="service">Service</SelectItem>
-                <SelectItem value="supply">Supply</SelectItem>
-                <SelectItem value="consultancy">Consultancy</SelectItem>
-                <SelectItem value="license">License</SelectItem>
-                <SelectItem value="nda">NDA</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" className="w-full">
-              <Filter className="h-4 w-4 mr-2" />
-              Advanced Filters
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Contracts List */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Filters & Search</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Input
+                    placeholder="Search contracts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="pending_review">Pending Review</SelectItem>
+                    <SelectItem value="in_review">In Review</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="signed">Signed</SelectItem>
+                    <SelectItem value="expired">Expired</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="service">Service</SelectItem>
+                    <SelectItem value="supply">Supply</SelectItem>
+                    <SelectItem value="consultancy">Consultancy</SelectItem>
+                    <SelectItem value="license">License</SelectItem>
+                    <SelectItem value="nda">NDA</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" className="w-full">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Advanced Filters
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Contracts List ({filteredContracts.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {filteredContracts.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No contracts found.</p>
-            </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Contracts List ({filteredContracts.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {filteredContracts.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No contracts found.</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Department</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created By</TableHead>
+                      <TableHead>End Date</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredContracts.map((contract) => (
+                      <TableRow 
+                        key={contract.id}
+                        className={`cursor-pointer hover:bg-muted/50 ${selectedContract === contract.id ? 'bg-muted' : ''}`}
+                        onClick={() => setSelectedContract(contract.id)}
+                      >
+                        <TableCell className="font-medium">{contract.title}</TableCell>
+                        <TableCell>{contract.contract_type}</TableCell>
+                        <TableCell>N/A</TableCell>
+                        <TableCell>{getStatusBadge(contract.status)}</TableCell>
+                        <TableCell>Creator</TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                            <span>{contract.end_date || 'N/A'}</span>
+                            {contract.end_date && getExpiryStatus(contract.end_date)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {contract.value ? `KES ${contract.value.toLocaleString()}` : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <ContractActions 
+                            contract={contract} 
+                            onUpdate={fetchContracts} 
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Activities Panel */}
+        <div className="space-y-6">
+          {selectedContract ? (
+            <ContractActivities contractId={selectedContract} />
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created By</TableHead>
-                  <TableHead>End Date</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredContracts.map((contract) => (
-                  <TableRow key={contract.id}>
-                    <TableCell className="font-medium">{contract.title}</TableCell>
-                    <TableCell>{contract.contract_type}</TableCell>
-                    <TableCell>{contract.departments?.name || 'N/A'}</TableCell>
-                    <TableCell>{getStatusBadge(contract.status)}</TableCell>
-                    <TableCell>{contract.profiles?.full_name || 'N/A'}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span>{contract.end_date || 'N/A'}</span>
-                        {contract.end_date && getExpiryStatus(contract.end_date)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {contract.value ? `KES ${contract.value.toLocaleString()}` : 'N/A'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <Card>
+              <CardHeader>
+                <CardTitle>Contract Activities</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Select a contract to view its activities and TAT tracking</p>
+                </div>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
