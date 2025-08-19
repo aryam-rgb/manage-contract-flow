@@ -18,7 +18,7 @@ import {
   Settings, 
   Home
 } from "lucide-react";
-import kcbLogo from "@/assets/kcb-logo-official.png";
+import kcbLogo from "@/assets/kcb-logo-official.svg";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
