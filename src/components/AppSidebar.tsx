@@ -16,14 +16,16 @@ import {
   Plus, 
   BarChart3, 
   Settings, 
-  Home
+  Home,
+  CalendarIcon
 } from "lucide-react";
 import kcbLogo from "@/assets/kcb-logo-official.svg";
 
 const navigationItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Contracts", url: "/contracts", icon: FileText },
-  { title: "Create Contract", url: "/contracts/create", icon: Plus },
+  { title: "Create Contract", url: "/create-contract", icon: Plus },
+  { title: "Schedule Review", url: "/schedule-review", icon: CalendarIcon },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Admin", url: "/admin", icon: Settings },
 ];

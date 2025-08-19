@@ -176,7 +176,7 @@ export function DynamicDashboard() {
   ];
 
   const handleScheduleReview = () => {
-    navigate('/contracts');
+    navigate('/schedule-review');
   };
 
   const handleNewContract = () => {

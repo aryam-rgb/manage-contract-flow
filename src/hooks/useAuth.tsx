@@ -75,17 +75,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching user role:', error);
+        setUserRole('user'); // Default role if error
         return;
       }
 
-      setUserRole(data?.role || 'user');
+      setUserRole(data?.role || 'user'); // Default to 'user' if no role found
     } catch (error) {
       console.error('Error fetching user role:', error);
-      setUserRole('user');
+      setUserRole('user'); // Default role if error
     }
   };
 
